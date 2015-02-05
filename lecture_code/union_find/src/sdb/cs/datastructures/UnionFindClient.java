@@ -11,7 +11,10 @@ public class UnionFindClient {
 		
 		try {
 			int N = Integer.parseInt(br.readLine());
-			QuickUnionFind uf = new QuickUnionFind(N);
+			// UnionFind uf = new UnionFind(N);
+			// QuickUnionFind uf = new QuickUnionFind(N);
+			// WQUF uf = new WQUF(N);
+			WQUFPC uf = new WQUFPC(N);
 			while ((input = br.readLine()) != null)
 			{
 				String[] numbers = input.split(" ");
