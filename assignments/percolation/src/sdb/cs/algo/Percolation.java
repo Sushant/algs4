@@ -17,25 +17,18 @@ public class Percolation {
 		gridBounds = N;
 		virtualTopSite = 0;
 		virtualBottomSite = N * N - 1;
+		
 		uf = new WeightedQuickUnionUF(N * N);
 		initSiteStates();
 		connectTopRowSites();
 		connectBottomRowSites();
-		// Remove later
-		/*for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				System.out.print(uf.find(i * N + j));
-			}
-			System.out.println("\n");
-		}
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				System.out.print(siteStates[i][j]);
-			}
-			System.out.println("\n");
-		}*/
 	}
 	
+	/**
+     * 1 = blocked
+     * 0 = open
+     * Initialize all sites to be blocked.
+     */
 	private void initSiteStates() {
 		for (int i = 0; i < gridBounds; i++) {
 			for (int j = 0; j < gridBounds; j++) {
@@ -57,6 +50,12 @@ public class Percolation {
 		}
 	}
 
+    /**
+     * Opens a site if it isn't already, also connects
+     * the newly opened site to its neighboring open sites.
+     * Will perform at most 4 union operations, hence
+     * time complexity is O(1).
+     */
 	public void open(int i, int j) {
 		if (i < 1 || i > gridBounds || j < 1 || j > gridBounds) {
 			throw new java.lang.IndexOutOfBoundsException();
@@ -66,12 +65,18 @@ public class Percolation {
 		connectNewlyOpenedSite(i - 1, j - 1);
 	}
 	
+	/**
+     * Connects the current site to its neighbors if they are open.
+     * If as a result of connecting the sites, we notice that the
+     * filled site(s) are connected to the bottom site(s), we can say
+     * that the system percolates.
+     */
 	private void connectNewlyOpenedSite(int i, int j) {
 	  for (int di = -1; di <= 1; di++) {
 		  for (int dj = -1; dj <= 1; dj++) {
-			  int row = i + di;
-			  int col = j + dj;
 			  if (isNeighboringSite(i, j, di, dj)) {
+				  int row = i + di;
+				  int col = j + dj;
 				  if (isOpen(row + 1, col + 1)) {
 					  if (isFull(i + 1, j + 1) && siteCanPercolate(row + 1, col + 1) 
 							  || isFull(row + 1, col + 1) && siteCanPercolate(i + 1, j + 1)) {
@@ -84,6 +89,7 @@ public class Percolation {
 	  }
 	}
 	
+	
 	private boolean isNeighboringSite(int i, int j, int di, int dj) {
 		if (i + di >= 0 && i + di < gridBounds)
 			if (j + dj >= 0 && j + dj < gridBounds)
@@ -92,6 +98,9 @@ public class Percolation {
 		return false;
 	}
 	
+	/**
+     * Returns state of the site, O(1)
+     */
 	public boolean isOpen(int i, int j) {
 		if (i < 1 || i > gridBounds || j < 1 || j > gridBounds) {
 			throw new java.lang.IndexOutOfBoundsException();
@@ -99,6 +108,9 @@ public class Percolation {
 		return siteStates[i - 1][j - 1] == 0;
 	}
 	
+	/**
+     * Performs at most 1 connected operation, O(1).
+     */
 	public boolean isFull(int i, int j) {
 		if (isOpen(i, j)) {
 			i -= i;
@@ -109,6 +121,9 @@ public class Percolation {
 		return false;
 	}
 	
+	/**
+     * Similar to isFull, but checks if its connected to bottom sites.
+     */
 	private boolean siteCanPercolate(int i, int j) {
 		if (isOpen(i, j)) {
 			i -= i;
@@ -119,21 +134,11 @@ public class Percolation {
 		return false;
 	}
 	
+	/**
+     * Percolation is determined at the time of connecting newly opened
+     * sites. Thus, we only need to return the boolean value stored, O(1).
+     */
 	public boolean percolates() {
-		if (percolates) {
-			/*for (int i = 0; i < gridBounds; i++) {
-				for (int j = 0; j < gridBounds; j++) {
-					System.out.print(siteStates[i][j]);
-				}
-				System.out.println("\n");
-			}*/
-			for (int i = 0; i < gridBounds; i++) {
-				for (int j = 0; j < gridBounds; j++) {
-					System.out.format("%03d ", uf.find(i * gridBounds + j));
-				}
-				System.out.println("\n");
-			}
-		}
 		return percolates;
 	}
 	
