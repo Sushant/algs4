@@ -113,8 +113,8 @@ public class Percolation {
      */
 	public boolean isFull(int i, int j) {
 		if (isOpen(i, j)) {
-			i -= i;
-			j -= j;
+			i -= 1;
+			j -= 1;
 			int site = i * gridBounds + j;
 			return uf.connected(virtualTopSite, site);
 		}
@@ -126,8 +126,8 @@ public class Percolation {
      */
 	private boolean siteCanPercolate(int i, int j) {
 		if (isOpen(i, j)) {
-			i -= i;
-			j -= j;
+			i -= 1;
+			j -= 1;
 			int site = i * gridBounds + j;
 			return uf.connected(virtualBottomSite, site);
 		}
